@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:maribelanja/menu.dart';
+import 'package:maribelanja/screens/menu.dart';
 
 void main() {
   runApp(const MyApp());

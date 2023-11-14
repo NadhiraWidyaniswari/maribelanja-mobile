@@ -141,3 +141,306 @@ class ShopCard extends StatelessWidget {
 - Setelah melakukan perubahan pada kedua file, saya melakukan `flutter run` dan melihat apa yang berubah dari tampilan halaman browser saya.
 
 
+## Tugas 8
+### Jelaskan perbedaan antara Navigator.push() dan Navigator.pushReplacement(), disertai dengan contoh mengenai penggunaan kedua metode tersebut yang tepat!
+Widget Navigator berfungsi untuk melakukan perpindahan dari halaman satu ke halaman lainnya sesuai dengan instruksi kode yang ditulis. Widget ini menampilkan halaman tersebut sebagai halaman baru yang ditumpuk. Mirip dengan implementasi stack, karena terdapat perintah push(), pop(), dan lain-lain. Saat kita menambahkan perintah push, halaman terbaru akan ada di paling atas stack dan apabila back,yaitu di pop bisa kembali ke halaman sebelumnya. Terdapat dua method yang sekilas mirip namun berbeda yaitu `Navigator.push()` dan `Navigator.pushReplacement()` mereka memiliki kesamaan untuk navigasi halaman, namun proses pada stacknya dibedakan. Perbedaan tersebut adalah,
+Navigator.push() | Navigator.pushReplacement()
+-----|----|
+Pada stack, halaman baru (B) akan dipush ke atas tumpukan halaman saat ini (A), dimana apabila pengguna menekan tombol back, pengguna akan dapat kembali pada halaman (A). | Pada stack halaman baru (B) akan dipush mengantikan halaman saat ini (A). Hal ini dapat berguna apabila pengguna tidak boleh mengakses halaman sebelumnya dan terus lanjut pada navigasi selanjutnya
+
+Penulisan kode keduanya juga mirip, hanya berbeda nama method saja, namun apabila mengimplementasikannya kurang tepat dapat menjadi kesalahan yang cukup fatal. Salah satu penerapan `Navigator.push()` dalam kehidupan sehari-hari pada saat berbelanja online, kita dapat mengecek harga belanja dan tidak jadi beli, kita dapat memencet tombol back ke halaman keranjang yang sebelumnya benar-benar kita akses. Lalu, salah satu contoh penerapan `Navigator.pushReplacement()` adalah setelah kita melakukan pembelian dan melajutkan pembayaran produk, ketika kita memencet tombol kembali, akan diarahkan pada halaman utama platform belanja online, bukan ke keranjang.
+
+### Jelaskan masing-masing layout widget pada Flutter dan konteks penggunaannya masing-masing!
+Dalam flutter, terdapat banyak widget untuk mengatur tata letak (layout) dalam aplikasi. Diantaranya adalah
+- Container
+  - dapat digunakan sebagai tempat dalam mengatur properti seperti padding, margin, warna latar, dan masih banyak lainnya dengan hubungan child.
+  ``` dart
+  Container(
+    margin: EdgeInsets.all(16.0),
+    padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+    color: Colors.blue,
+    child: Text('Hello World!'),
+  )
+  ```
+- Column dan Row
+  - Pada hal ini dapat digunakan pada pengaturan card yang memiliki pengaturan vertikal
+  ```dart
+  Column(
+    children: [
+      Text('Item 1'),
+      Text('Item 2'),
+      Text('Item 3'),
+    ],
+  )
+  ```
+
+- ListView dan GridView
+  - ListView dapat digunakan untuk menampilkan daftar dalam list yang ingin tampilkan, pada kode saya, pada saat membuat drawer mengimplementasikan tampilan ini.
+  ```dart
+  ListView(
+    children: [
+      ListTile(title: Text('Item 1')),
+      ListTile(title: Text('Item 2')),
+      ListTile(title: Text('Item 3')),
+    ],
+  )
+  ```
+- AppBar
+  - Digunakan untuk header halaman utama pada kode
+  ```dart
+  AppBar(
+    title: Text('Mari Belanja'),
+    actions: [
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {
+        },
+      ),
+    ],
+  )
+  ```
+
+Semua layout memiliki kelebihan dan kekurangannya tersendiri, tergantung dengan implementasi kode masing-masing. Seperti contoh dalam menampilkan halaman yang membutuhkan setting secara vertikal dapat menggunakan listview, tidak perlu column dan row.
+
+### Sebutkan apa saja elemen input pada form yang kamu pakai pada tugas kali ini dan jelaskan mengapa kamu menggunakan elemen input tersebut!
+
+Semua input dalam form yang saya terapkan menggunakan elemen `TextFormField` dimana akan menerima input berupa string untuk nama dan deskripsi produk, sementara untuk harga dan jumlah akan menerima input berupa integer yang juga dihandle apabila field kosong menggunakan validators.
+
+```dart
+TextFormField(
+  decoration: InputDecoration(
+    labelText: 'Nama',
+    hintText: 'Masukkan nama Anda',
+  ),
+)
+```
+kita dapat mengatur label dan hint pada decoration dari TextFormField dalam form terdapat button yang dapat save product saat dibentuk
+
+### Bagaimana penerapan clean architecture pada aplikasi Flutter?
+clean architecture merupakan konsep yang penting dalam mengembangkan sebuah aplikasi dimana memisahkan logika aplikasi menjadi berlapis-lapis terisolasi dan independen satu dengan lainnya. Tujuan dari pemisahan tersebut tidak lain untuk memudahkan pengerjaan bersamaan sebuah aplikasi dan agar tidak tercampur satu dengan lainnya. Pada tugas 8, pemisahan tersebut dipisahkan menjadi tampilan halaman form dan menu pada folder screens. Lalu terdapat widget yang mengatur tombol-tombol pada folder wigdets untuk shop_card dan left drawer navigasi.
+
+Dalam flutter, penerapan tersebut membantu untuk memisahkan bagian menjadi business logic, UI, state management, dan sumber eksternal. Dan kode kita lebih dapat mudah di uji coba
+
+- Lapisan paling luar aadalah lapisan data maupun user interface. Basis data juga terletak dalam kode ini.
+- Lapisan presentation merupakan repositary yang menghubungkan data dengan tampilan aplikasi
+- Lapisan domain merupakan lapisan paling dalam dimana terdapat logika aplikasi seperti entities dan use cases yang menjadi tempat bergantung seluruh logika lainnya.
+
+### Jelaskan bagaimana cara kamu mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial)
+
+- Langkah pertama yang saya lakukan adalah membuat form untuk menambah produk pada aplikasi saya. Saya membuat maribelanja_form.dart dan membuat state dan membuat widget build sebagai kerangka dasar halaman aplikasi form. Lalu ditambahkan warna untuk form. Saya juga menambahkan _formkey ke dalam atribut key untuk handler dari form state
+
+``` dart
+class _ShopFormPageState extends State<ShopFormPage> {
+    final _formKey = GlobalKey<FormState>();
+}
+```
+
+- dan saya menambahkan pada body form key tersebut. Saya menambahkan string kosong untuk nama dan deskripsi produk dan saya setting default harga dan jumlah produk adalah 0
+
+``` dart
+class _ShopFormPageState extends State<ShopFormPage> {
+    final _formKey = GlobalKey<FormState>();
+    String _name = "";
+    int _price = 0;
+    int _amount = 0;
+    String _description = "";
+}
+```
+
+- Lalu saya menambahkan "TextFromField" yang telah diatur paddingnya untuk meminta output keempat elemen diatas dan saya jadikan child dari column serta setting rata teksnya. Terdapat validator untuk mengecek apakah ada bagian yang tidak diisi oleh pengguna. Sehingga dalam file tersebut berisi elemen-elemen untuk form
+``` dart
+child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: "Nama Produk",
+                      labelText: "Nama Produk",
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                    ),
+                    onChanged: (String? value) {
+                      setState(() {
+                        _name = value!;
+                      });
+                    },
+                    validator: (String? value) {
+                      if (value == null || value.isEmpty) {
+                        return "Nama tidak boleh kosong!";
+                      }
+                      return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Harga",
+                    labelText: "Harga",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _price = int.parse(value!);
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Harga tidak boleh kosong!";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Harga harus berupa angka!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Jumlah",
+                    labelText: "Jumlah",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _amount = int.parse(value!);
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Jumlah tidak boleh kosong!";
+                    }
+                    if (int.tryParse(value) == null) {
+                      return "Jumlah harus berupa angka!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    hintText: "Deskripsi",
+                    labelText: "Deskripsi",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                  ),
+                  onChanged: (String? value) {
+                    setState(() {
+                      _description = value!;
+                    });
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return "Deskripsi tidak boleh kosong!";
+                    }
+                    return null;
+                  },
+                ),
+              ),
+```
+
+- Saya juga menambah elevated button agar produk baru akan disimpan secara pop up datanya (belum disimpan pada data base). Perlu fungsi `showDialog()` pada bagian `onPressed()` untuk memunculkan informasi dari produk yang coba untuk disimpan. Lalu bagaimana untuk navigasi pop sebagai perintah untuk kembali ke halaman selanjutnya, dan melakukan form reset dengan kode `_formKey.currentState!.reset()`
+
+- Lalu pindah pada menu.dart untuk mengatur navigasi tombol "tambah produl" agar redirect ke halaman form dengan cara menambahkan Navigator.push
+```dart
+if (item.name == "Tambah Produk") {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) => const ShopFormPage(),
+    ));
+          }
+
+```
+- Setelah itu saya akan menambahkan shortcut pada navigasi yang telah saya buat pada tugas 7. Pertama saya membuat folder baru bernama `widgets` dengan nama `left_drawer.dart` lalu saya tambahkan kode,
+```dart
+import 'package:flutter/material.dart';
+import 'package:maribelanja/screens/menu.dart';
+import 'package:maribelanja/screens/maribelanja_form.dart';
+
+
+class LeftDrawer extends StatelessWidget {
+  const LeftDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: ListView(
+        children: [
+          const DrawerHeader(
+            decoration: BoxDecoration(
+              color: Colors.indigo,
+            ),
+            child: Column(
+              children: [
+                Text(
+                  'Mari Belanja',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 30,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Padding(padding: EdgeInsets.all(10)),
+                Text("Catat seluruh keperluan belanjamu di sini!",
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.normal,
+                      color: Colors.white,
+                    )
+                  ),
+              ],
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.home_outlined),
+            title: const Text('Halaman Utama'),
+            // Bagian redirection ke MyHomePage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MyHomePage(),
+                  ));
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.add_shopping_cart),
+            title: const Text('Tambah Produk'),
+            // Bagian redirection ke ShopFormPage
+            onTap: () {
+              Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const ShopFormPage(),
+                  ));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+}
+```
+- yang akan membuat seperti navigasi shortcut dan pada tugas ini, saya baru setting untuk direct ke halaman form tambah produk apabila buttonnya ditekan akan pindah halaman. Lalu saya juga menambahkan dekorasi seperti warna dan tulisan tambahan untuk mempercantik tampilan. Setelah itu, tambahkan drawer sebagain child dari AppBar pada menu.dart dengan cara import path dan tambahkan kode `drawer: const LeftDrawer(),`
+
+- Setelah itu saya melakukan refactoring file dengan memindahkan kode untuk halaman pada aplikasi yaitu `menu.dart` dan  `maribelanja_form` menjadi satu folder pada screens dan widget pada aplikasi pada folder baru  `widgets` setelah itu lakukan drag `shop_card.dart, menu.dart, maribelanja.dart` pada folder yang telah dijelaskan diatas. Lalu pastikan pada `flutter run` kode dapat berjalan dengan semua checklist tugas terpenuhi dan lancar.
+
+
+### Referensi
+https://aditya-rohman.medium.com/mengembangkan-aplikasi-flutter-dengan-proses-test-driven-development-tdd-dan-mengadopsi-clean-29d29bb0702b
