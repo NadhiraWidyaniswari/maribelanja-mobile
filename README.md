@@ -444,3 +444,38 @@ class LeftDrawer extends StatelessWidget {
 
 ### Referensi
 https://aditya-rohman.medium.com/mengembangkan-aplikasi-flutter-dengan-proses-test-driven-development-tdd-dan-mengadopsi-clean-29d29bb0702b
+
+## Tugas 9
+- Apakah bisa kita melakukan pengambilan data JSON tanpa membuat model terlebih dahulu? Jika iya, apakah hal tersebut lebih baik daripada membuat model sebelum melakukan pengambilan data JSON?
+Hal tersebut dapat dilakukan, yaitu pengambilan data JSOn tanpa pembuatan model. Kita bisa mengambilnya secara langsung namun belum terstruktur rapih. Jika sudah mengonversinya sebagai model, hal tersebut lebih dapat mudah dibaca karena kita dapat mengetahui sebuah data memiliki entitas apa saja. Lalu juga kelemahan dari tidak menggunakan model adalah sulit untuk dikelola dan di modifikasi
+
+- Jelaskan fungsi dari CookieRequest dan jelaskan mengapa instance CookieRequest perlu untuk dibagikan ke semua komponen di aplikasi Flutter. 
+Cookie berguna untuk menyimpan data mengenai sesi yang dilakukan oleh pengguna. Dan fungsi dari cookie request adalah mengelola cookies saat autentikasi. Hal ini juga berguna untuk track data kapan terakhir pengguna login
+
+- Jelaskan mekanisme pengambilan data dari JSON hingga dapat ditampilkan pada Flutter.
+  - Langkah pertama yang dilakukan adalah mengambil dari HTTP, disini kita gunakan data dari web deploymen django untuk data tersebut. (menggunakan package http)
+  - Lalu data yang sudah diambil dlam format JSON akan dikonversi dalam object dalam bahasa dart. Hal ini dijadikan Map seperti konversi model data dari Django ke dart
+  - Lalu akan dilakukan pemrosesan dan penuimpanan data yang akan ditampilkan sesuai dengan kode program kita dimana terdapat grid pada kode ini
+
+
+- Jelaskan mekanisme autentikasi dari input data akun pada Flutter ke Django hingga selesainya proses autentikasi oleh Django dan tampilnya menu pada Flutter.
+  Pada tugas ini, beberapa langkan autentikasi pengguna yaitu (apabila berhasil mengambil data dari web pbpo)
+  = Pengguna akan ditampilkan halaman login untuk mengisi nama dan password, saya belum melakukan proses registrasi. Dan dilakukan pengiriman data dengan method POST pada backend
+  - Pengecekkan akan dilakukan dengan mengecek nama dan password yang sudah pernah masuk ke dalam aplikasi. Setelah proses berlangsung, flutter akan menangkap respon tersebut, pada tugas ini juga terdapat cookie request. Dan pengguna dapat mengakses menu di flutter.
+
+- Sebutkan seluruh widget yang kamu pakai pada tugas ini dan jelaskan fungsinya masing-masing.
+  - ListTile = menambah button dari dalam list untuk ditekan
+  - Drawer = menggunakan konsep navigation bar
+  - Future Builder = melakukan proses apabila terdapat perintah aync ke JSON dimana hal tersebut bisa saja belum terjadi
+  - AlertDialog = menampilkan pesan apabila pengguna menekan atau melakukan sesuatu
+
+
+- Jelaskan bagaimana cara kamu 
+mengimplementasikan checklist di atas secara step-by-step! (bukan hanya sekadar mengikuti tutorial).
+
+  - Pada tugas 9 ini, saya belum bisa berhasil login karena deployment django saya bermasalah
+  - Saya menambahkan pada proyek saya terdahulu aplikasi autentikasi yang bisa saya gunakan pada tugas ini serta mengatur views.py dan urls.py yang digunakan. Saya juga menambahkannya pada installed apps. Setelah itu pada proyek flutter saya, saya menambahkan login dart yang berisi halaman untuk login pada proyek saya dan merubah rute saat pertama kali akses aplikasi saya harus login, baru bisa mengakses tampilan pada tugas 8
+  - Saya juga memindahkan model dari django saya yang dikonversi menjadi bahasa dart agar data saya dapat terstruktur rapih.
+  - Saya juga mengambil data dari aplikasi django saya dengan fetch menggunakan package http. Yang harus di tambah dulu serta menginstal beberapa package pada django sebelumnya.
+  - Lalu saya membuat list_product.dart yang dapat digunakan untuk melihat produk apa saja yang ada dalam aplikasi saya untuk lihat produk dan mengatur rute jalannya aplikasi ketika menekan button
+  - Saya juga membuat cookie dan fungsi untuk logout namun belum bisa menjalankan hal tersebut

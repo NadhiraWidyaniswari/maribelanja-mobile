@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:maribelanja/screens/menu.dart';
 import 'package:maribelanja/screens/maribelanja_form.dart';
+import 'package:maribelanja/screens/list_product.dart';
 
 
 class LeftDrawer extends StatelessWidget {
@@ -61,6 +62,17 @@ class LeftDrawer extends StatelessWidget {
                     builder: (context) => const ShopFormPage(),
                   ));
             },
+          ),
+          ListTile(
+              leading: const Icon(Icons.shopping_basket),
+              title: const Text('Daftar Produk'),
+              onTap: () {
+                  // Route menu ke halaman produk
+                  Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ProductPage()),
+                  );
+              },
           ),
         ],
       ),
