@@ -16,10 +16,11 @@ class _ProductPageState extends State<ProductPage> {
 Future<List<Product>> fetchProduct() async {
     // TODO: Ganti URL dan jangan lupa tambahkan trailing slash (/) di akhir URL!
     var url = Uri.parse(
-        'http://127.0.0.1:8000/json/');
+        'https://nadhira-widyaniswari-tugas.pbp.cs.ui.ac.id/json/');
     var response = await http.get(
         url,
-        headers: {"Content-Type": "application/json"},
+        headers: {"Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/json"},
     );
 
     // melakukan decode response menjadi bentuk json
@@ -59,7 +60,7 @@ Widget build(BuildContext context) {
                         SizedBox(height: 8),
                         ],
                     );
-                } else {
+                  } else {
                     return ListView.builder(
                         itemCount: snapshot.data!.length,
                         itemBuilder: (_, index) => Container(
@@ -80,13 +81,17 @@ Widget build(BuildContext context) {
                                     const SizedBox(height: 10),
                                     Text("${snapshot.data![index].fields.price}"),
                                     const SizedBox(height: 10),
+                                    Text("${snapshot.data![index].fields.amount}"),
+                                    const SizedBox(height: 10),
                                     Text(
                                         "${snapshot.data![index].fields.description}")
                                 ],
                                 ),
-                            ));
+                            )
+                            );
                     }
                 }
-            }));
+            })
+            );
     }
 }
